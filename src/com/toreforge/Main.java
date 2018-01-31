@@ -16,7 +16,6 @@ public class Main {
 	    String inputFile = args[0];
 	    String dictionaryFile = args[1];
 	    Dictionary d = new Dictionary();
-//	    d.loadDictionary(dictionaryFile);
 	    d.loadDictionary(dictionaryFile);
         Board board = new Board(inputFile, d);
         board.printBoard();

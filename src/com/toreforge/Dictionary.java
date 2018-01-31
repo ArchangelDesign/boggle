@@ -6,11 +6,13 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.StringJoiner;
 
 public class Dictionary {
     private List<String> dic = new ArrayList<>();
     private HashMap<String, Integer> foundWords = new HashMap<>();
     public static int count = 0;
+    private TheWord theDictionary = new TheWord(null);
 
     private HashMap<String, List<String>> newDic = new HashMap<>();
 
@@ -20,16 +22,30 @@ public class Dictionary {
         BufferedReader bufferedReader =
                 new BufferedReader(fileReader);
         String line;
-        while((line = bufferedReader.readLine()) != null) {
-            if (line.length() < 2)
-                continue;
-            line = line.toLowerCase();
-            if (!newDic.containsKey(line.substring(0, 2)))
-                newDic.put(line.substring(0, 2), new ArrayList<>());
-            newDic.get(line.substring(0, 2)).add(line);
+        while ((line = bufferedReader.readLine()) != null) {
+            loadWord(line.toLowerCase());
         }
 
         bufferedReader.close();
+    }
+
+    public void loadWord(String word) {
+        char[] w = word.toCharArray();
+
+        putWord(w, 0, w.length, theDictionary);
+    }
+
+    private void putWord(char[] word, int index, int size, TheWord dictionary) {
+        if (index >= size) {
+            dictionary.setFullWord(true);
+            return;
+        }
+
+        dictionary.setKey(String.valueOf(word[index]));
+
+        if (!dictionary.getChildren().containsKey(String.valueOf(word[index])))
+            dictionary.getChildren().put(String.valueOf(word[index]), new TheWord(String.valueOf(word[index])));
+        putWord(word, index + 1, size, dictionary.getChildren().get(String.valueOf(word[index])));
     }
 
     private boolean wordExists(String word) {
